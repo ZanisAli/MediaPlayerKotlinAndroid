@@ -24,12 +24,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Song Name"
-                android:textSize="27sp" />
+                android:textSize="22sp" />
 
             <TextView
                 android:id="@+id/tvAuthor"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40pt"
                 android:text="Author"
                 android:textSize="14sp" />
         </LinearLayout>
