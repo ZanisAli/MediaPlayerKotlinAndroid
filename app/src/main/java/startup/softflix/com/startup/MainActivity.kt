@@ -1,5 +1,6 @@
 package startup.softflix.com.startup
 
+import android.media.MediaPlayer
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -15,6 +16,10 @@ class MainActivity : AppCompatActivity() {
 
     var adapter:MySongAdapter?=null
 
+    //instance of media player builtin class that allows to run music etc
+
+    var mp:MediaPlayer?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -23,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         adapter=MySongAdapter(listSongs)
         lsListSongs.adapter=adapter
 
+        var mytracking= mySongTrack()
+        mytracking.start()
 
     }
 
@@ -48,6 +55,27 @@ class MainActivity : AppCompatActivity() {
             myView.tvAuthor.text=Song.AuthorName
             myView.buPlay.setOnClickListener(){
                 //play song when someone click
+                //first initialize media player
+                mp= MediaPlayer()
+
+                if(myView.buPlay.text.equals("Stop")){
+                    mp!!.stop()
+                    //after successfull playing set the text of button to stop
+                    myView.buPlay.text = "Start"
+                }else {
+                    try {
+                        //play from this place
+                        mp!!.setDataSource(Song.SongURL)
+                        //prepare to run
+                        mp!!.prepare()
+                        //start
+                        mp!!.start()
+                        myView.buPlay.text = "Stop"
+                        sbProgress.max=mp!!.duration //max value = length of song duration
+
+                    } catch (ex: Exception) {
+                    }
+                }
             }
 
             return myView
@@ -65,5 +93,25 @@ class MainActivity : AppCompatActivity() {
             return listSongs.size
         }
 
+    }
+
+    inner class mySongTrack():Thread(){
+                override fun run() {
+           while (true)
+           {
+               try {
+                   Thread.sleep(1000)
+               }
+               catch (ex:Exception){}
+//always synch progress bar with song play duration
+               runOnUiThread() {
+
+                   if (mp!=null){
+                   sbProgress!!.progress = mp!!.currentPosition
+               }
+               }
+           }
+
+        }
     }
 }
